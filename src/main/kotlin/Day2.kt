@@ -1,4 +1,4 @@
-enum class Shape(val points: Int) {
+private enum class Shape(val points: Int) {
     Rock(1), Paper(2), Scissors(3);
 
     fun getWinningOpposite(): Shape {
@@ -18,9 +18,9 @@ enum class Shape(val points: Int) {
     }
 }
 
-data class EncodedInput(val first: Char, val second: Char)
+private data class EncodedInput(val first: Char, val second: Char)
 
-data class Game(val opponent: Shape, val you: Shape) {
+private data class Game(val opponent: Shape, val you: Shape) {
     private fun pointsForGame(): Int {
         if (opponent == you) {
             return 3 // draw
@@ -37,7 +37,7 @@ data class Game(val opponent: Shape, val you: Shape) {
 }
 
 @Challenge(2)
-class Day2 : BaseChallenge<List<EncodedInput>>() {
+private class Day2 : BaseChallenge<List<EncodedInput>>() {
 
     override val inputPath = "input/day2.txt"
 

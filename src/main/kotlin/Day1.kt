@@ -1,5 +1,5 @@
 @Challenge(1)
-class Day1 : BaseChallenge<List<Int?>>() {
+private class Day1 : BaseChallenge<List<Int?>>() {
     override val inputPath: String = "input/day1.txt"
 
     override fun parse(input: List<String>): List<Int?> {
