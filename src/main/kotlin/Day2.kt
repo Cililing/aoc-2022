@@ -21,19 +21,13 @@ private enum class Shape(val points: Int) {
 private data class EncodedInput(val first: Char, val second: Char)
 
 private data class Game(val opponent: Shape, val you: Shape) {
-    private fun pointsForGame(): Int {
-        if (opponent == you) {
-            return 3 // draw
-        }
-
-        if (opponent.getWinningOpposite() == you) {
-            return 6 // win
-        }
-
-        return 0 // lost
+    fun points(): Int {
+        return when {
+            opponent == you -> 3
+            opponent.getWinningOpposite() == you -> 6
+            else -> 0
+        } + you.points
     }
-
-    fun points() = pointsForGame() + you.points
 }
 
 @Challenge(2)
@@ -52,40 +46,33 @@ private class Day2 : BaseChallenge<List<EncodedInput>>() {
 
     override fun ex1(): String {
         return input.map {
-            val first = when (it.first) {
-                'A' -> Shape.Rock
-                'B' -> Shape.Paper
-                'C' -> Shape.Scissors
-                else -> throw IllegalArgumentException("must be one of A/B/C")
-            }
+            val opponent = parseLetter(it.first)
+            val you = parseLetter(it.second, 'X', 'Y', 'Z')
 
-            val last = when (it.second) {
-                'X' -> Shape.Rock
-                'Y' -> Shape.Paper
-                'Z' -> Shape.Scissors
-                else -> throw IllegalArgumentException("must be one of X/Y/Z")
-            }
-
-            Game(first, last)
+            Game(opponent, you)
         }.sumOf { it.points() }.toString()
     }
 
     override fun ex2(): String {
         return input.map {
-            val first = when (it.first) {
-                'A' -> Shape.Rock
-                'B' -> Shape.Paper
-                'C' -> Shape.Scissors
-                else -> throw IllegalArgumentException("must be one of A/B/C")
-            }
-
-            val last = when (it.second) {
-                'X' -> first.getLoosingOpposite()
-                'Y' -> first
-                'Z' -> first.getWinningOpposite()
+            val opponent = parseLetter(it.first)
+            val you = when (it.second) {
+                'X' -> opponent.getLoosingOpposite()
+                'Y' -> opponent
+                'Z' -> opponent.getWinningOpposite()
                 else -> throw IllegalArgumentException("must be one of X/Y/Z")
             }
-            Game(first, last)
+
+            Game(opponent, you)
         }.sumOf { it.points() }.toString()
+    }
+
+    private fun parseLetter(letter: Char, rock: Char = 'A', paper: Char = 'B', scissors: Char = 'C'): Shape {
+        return when (letter) {
+            rock -> Shape.Rock
+            paper -> Shape.Paper
+            scissors -> Shape.Scissors
+            else -> throw IllegalArgumentException("must be one of A/B/C")
+        }
     }
 }
