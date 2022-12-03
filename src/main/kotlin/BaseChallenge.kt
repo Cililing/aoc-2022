@@ -1,3 +1,4 @@
+import conctract.CallSuper
 import conctract.Pure
 import java.io.File
 import kotlin.time.Duration
@@ -51,7 +52,8 @@ abstract class BaseChallenge<Parsed> {
 
     // call prepare to parse the input (for not poisoning result-time)
     @OptIn(ExperimentalTime::class)
-    fun prepare(): Duration {
+    @CallSuper
+    open fun prepare(): Duration {
         return measureTime {
             input.hashCode()
         }
