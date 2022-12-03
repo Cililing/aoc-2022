@@ -1,42 +1,16 @@
-private enum class Shape(val points: Int) {
-    Rock(1), Paper(2), Scissors(3);
+package challenges.day2
 
-    fun getWinningOpposite(): Shape {
-        return when (this) {
-            Rock -> Paper
-            Paper -> Scissors
-            Scissors -> Rock
-        }
-    }
-
-    fun getLoosingOpposite(): Shape {
-        return when (this) {
-            Rock -> Scissors
-            Paper -> Rock
-            Scissors -> Paper
-        }
-    }
-}
-
-private data class EncodedInput(val first: Char, val second: Char)
-
-private data class Game(val opponent: Shape, val you: Shape) {
-    fun points(): Int {
-        return when {
-            opponent == you -> 3
-            opponent.getWinningOpposite() == you -> 6
-            else -> 0
-        } + you.points
-    }
-}
+import runner.Benchmark
+import runner.Challenge
+import runner.Mapper
+import runner.Task
 
 @Challenge(2)
 @Benchmark(1000)
-private class Day2 : BaseChallenge<List<EncodedInput>>() {
+class Day2 {
 
-    override val inputPath = "input/day2.txt"
-
-    override fun parse(input: List<String>): List<EncodedInput> {
+    @Mapper
+    fun parse(input: List<String>): List<EncodedInput> {
         return input.map {
             val firstChar = it.trim().first()
             val lastChar = it.trim().last()
@@ -45,7 +19,8 @@ private class Day2 : BaseChallenge<List<EncodedInput>>() {
         }
     }
 
-    override fun ex1(input: List<EncodedInput>): String {
+    @Task("ex1")
+    fun ex1(input: List<EncodedInput>): String {
         return input.map {
             val opponent = parseLetter(it.first)
             val you = parseLetter(it.second, 'X', 'Y', 'Z')
@@ -54,7 +29,8 @@ private class Day2 : BaseChallenge<List<EncodedInput>>() {
         }.sumOf { it.points() }.toString()
     }
 
-    override fun ex2(input: List<EncodedInput>): String {
+    @Task("ex2")
+    fun ex2(input: List<EncodedInput>): String {
         return input.map {
             val opponent = parseLetter(it.first)
             val you = when (it.second) {

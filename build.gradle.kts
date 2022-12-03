@@ -15,6 +15,8 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+
+    implementation("org.nield:kotlin-statistics:1.2.1")
 }
 
 tasks.test {

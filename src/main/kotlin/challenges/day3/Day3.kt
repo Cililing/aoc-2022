@@ -1,19 +1,21 @@
-import java.lang.IllegalArgumentException
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
+package challenges.day3
+
+import runner.Benchmark
+import runner.Challenge
+import runner.Mapper
+import runner.Task
 
 @Challenge(3)
 @Benchmark(1000)
-private class Day3 : BaseChallenge<List<String>>() {
+class Day3 {
 
-    override val inputPath = "input/day3.txt"
-
-    override fun parse(input: List<String>): List<String> {
+    @Mapper
+    fun parse(input: List<String>): List<String> {
         return input
     }
 
-    override fun ex1(input: List<String>): String {
+    @Task("ex1")
+    fun ex1(input: List<String>): String {
         return input
             .flatMap {
                 val pivot = it.length / 2
@@ -24,7 +26,8 @@ private class Day3 : BaseChallenge<List<String>>() {
             .toString()
     }
 
-    override fun ex2(input: List<String>): String {
+    @Task("ex2")
+    fun ex2(input: List<String>): String {
         return input
             .chunked(3)
             .flatMap {
