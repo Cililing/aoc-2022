@@ -31,6 +31,7 @@ private data class Game(val opponent: Shape, val you: Shape) {
 }
 
 @Challenge(2)
+@Benchmark(1000)
 private class Day2 : BaseChallenge<List<EncodedInput>>() {
 
     override val inputPath = "input/day2.txt"

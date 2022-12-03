@@ -1,4 +1,5 @@
 @Challenge(1)
+@Benchmark(1000)
 private class Day1 : BaseChallenge<List<Int?>>() {
     override val inputPath: String = "input/day1.txt"
 
@@ -8,18 +9,17 @@ private class Day1 : BaseChallenge<List<Int?>>() {
 
     override fun ex1(): String {
         return input
-            .runningReduce { acc, i -> if (i == null) 0 else acc!! + i }
-            .mapNotNull { it }
+            .runningFold(0) { acc, i -> if (i == null) 0 else acc + i }
             .maxBy { it }
             .toString()
     }
 
     override fun ex2(): String {
         return input
-            .runningReduce { acc, i -> if (i == null) 0 else acc!! + i }
-            .mapNotNull { it }
-            .sorted()
-            .takeLast(3)
+            .asSequence()
+            .runningFold(0) { acc, i -> if (i == null) 0 else acc + i }
+            .sortedDescending()
+            .take(3)
             .sum()
             .toString()
     }

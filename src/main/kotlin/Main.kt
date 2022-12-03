@@ -1,5 +1,6 @@
 import java.io.File
 import java.net.URL
+import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
@@ -7,26 +8,43 @@ import kotlin.time.measureTimedValue
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Challenge(val day: Int)
 
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Benchmark(val n: Int)
+
 class Main
 
 @OptIn(ExperimentalTime::class)
 fun main(args: Array<String>) {
+    val enableBenchmark = false
+
     getAllChallenges()
         .associateBy { (it.javaClass.annotations.find { it is Challenge } as Challenge) }
         .toSortedMap(compareBy { it.day })
         .forEach {
             println("Running challenge for day: ${it.key.day}")
 
+            val benchmark = it.value.javaClass.annotations.find { it is Benchmark } as? Benchmark
+            val tries = if (enableBenchmark) benchmark?.n ?: 1 else 1
+
             val preparation = it.value.prepare()
             println("Parsing data time: $preparation")
 
-            val results = measureTimedValue {
-                it.value.run()
+            val results = (0 until tries).map { _ ->
+                measureTimedValue {
+                    it.value.run()
+                }
             }
 
-            println("Result 1: ${results.value.first.result}, finished in ${results.value.first.executionTime}")
-            println("Result 2: ${results.value.second.result} finished in ${results.value.second.executionTime}")
-            println("Day ${it.key.day} finished in ${results.duration}.")
+            val avg1 = results.map { it.value.first.executionTime.inWholeNanoseconds }.average()
+                .let { d -> d.nanoseconds }
+            val avg2 = results.map { it.value.second.executionTime.inWholeNanoseconds }.average()
+                .let { d -> d.nanoseconds }
+
+            println("Result 1: ${results[0].value.first.result}, finished in ${results[0].value.first.executionTime}")
+            println("Result 2: ${results[0].value.second.result} finished in ${results[0].value.second.executionTime}")
+            println("Day ${it.key.day} finished in ${results[0].duration}.")
+            println("Average time (${tries} runs): [${avg1}, ${avg2}]")
             println()
         }
 }
@@ -51,10 +69,10 @@ fun getAllChallenges(packageName: String = ""): List<BaseChallenge<*>> {
             .filter { f -> f.isFile && !f.name.contains('$') && f.name.endsWith(".class") }
             .forEach {
                 val fullyQualifiedClassName = packageName +
-                    it.canonicalPath.removePrefix(directory.canonicalPath)
-                        .dropLast(6) // remove .class
-                        .replace('/', '.')
-                        .removePrefix(".") // handle root
+                        it.canonicalPath.removePrefix(directory.canonicalPath)
+                            .dropLast(6) // remove .class
+                            .replace('/', '.')
+                            .removePrefix(".") // handle root
                 try {
                     val clazz = Class.forName(fullyQualifiedClassName)
 
