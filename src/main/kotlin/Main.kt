@@ -45,6 +45,13 @@ fun main(args: Array<String>) {
                 }
             }
 
+            if (results.map { it.value.first.result }.toSet().size != 1) {
+                println("Result 1 is not deterministic! [${results.map { it.value.first.result }}]")
+            }
+            if (results.map { it.value.second.result }.toSet().size != 1) {
+                println("Result 2 is not deterministic! [${results.map { it.value.second.result }}]")
+            }
+
             val avg1 = results.map { it.value.first.executionTime.inWholeNanoseconds }.average()
                 .let { d -> d.nanoseconds }
             val avg2 = results.map { it.value.second.executionTime.inWholeNanoseconds }.average()

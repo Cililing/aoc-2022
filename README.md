@@ -45,6 +45,7 @@ challenge against the test data.
 
 The class may be annotated with `@Benchmark(n: Int)` as well. Then the app will execute the Challenge n-times to get the
 average time. To run the benchmark you need to set a proper flag in the env (`enableBenchmark`).
+The benchmark mode checks also if the result is deterministic. If not, it prints a warning to the console.
 
 Example result:
 
