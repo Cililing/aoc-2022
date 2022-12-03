@@ -6,7 +6,7 @@ import runner.Prepare
 import runner.Task
 
 @Challenge(0)
-class Day0 {
+class Challenge {
 
     private val computedValue by lazy {
         (0..100).map { it * it }

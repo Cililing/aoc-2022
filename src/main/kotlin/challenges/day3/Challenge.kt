@@ -7,7 +7,7 @@ import runner.Task
 
 @Challenge(3)
 @Benchmark(1000)
-class Day3 {
+class Challenge {
 
     @Mapper
     fun parse(input: List<String>): List<String> {

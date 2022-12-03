@@ -7,7 +7,7 @@ import runner.Task
 
 @Challenge(2)
 @Benchmark(1000)
-class Day2 {
+class Challenge {
 
     @Mapper
     fun parse(input: List<String>): List<EncodedInput> {
