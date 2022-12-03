@@ -6,11 +6,11 @@ private class Day0 : BaseChallenge<List<String>>() {
         return input
     }
 
-    override fun ex1(): String {
+    override fun ex1(input: List<String>): String {
         return "test passed"
     }
 
-    override fun ex2(): String {
+    override fun ex2(input: List<String>): String {
         return "test passed"
     }
 }

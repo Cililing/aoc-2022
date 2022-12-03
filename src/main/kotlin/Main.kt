@@ -16,16 +16,25 @@ class Main
 
 @OptIn(ExperimentalTime::class)
 fun main(args: Array<String>) {
-    val enableBenchmark = false
+    val enableBenchmark = System.getenv("ENABLE_BENCHMARK")?.toBooleanStrictOrNull()
 
     getAllChallenges()
         .associateBy { (it.javaClass.annotations.find { it is Challenge } as Challenge) }
         .toSortedMap(compareBy { it.day })
         .forEach {
+            println("----------------------------------------")
             println("Running challenge for day: ${it.key.day}")
 
+            val testResult = it.value.runTest()
+            if (testResult.first != BaseChallenge.Result.invalid) {
+                println("Result 1/Test: ${testResult.first.result} finished in ${testResult.first.executionTime}")
+            }
+            if (testResult.second != BaseChallenge.Result.invalid) {
+                println("Result 2/Test: ${testResult.second.result} finished in ${testResult.second.executionTime}")
+            }
+
             val benchmark = it.value.javaClass.annotations.find { it is Benchmark } as? Benchmark
-            val tries = if (enableBenchmark) benchmark?.n ?: 1 else 1
+            val tries = if (enableBenchmark == true) benchmark?.n ?: 1 else 1
 
             val preparation = it.value.prepare()
             println("Parsing data time: $preparation")
@@ -44,7 +53,7 @@ fun main(args: Array<String>) {
             println("Result 1: ${results[0].value.first.result}, finished in ${results[0].value.first.executionTime}")
             println("Result 2: ${results[0].value.second.result} finished in ${results[0].value.second.executionTime}")
             println("Day ${it.key.day} finished in ${results[0].duration}.")
-            println("Average time (${tries} runs): [${avg1}, ${avg2}]")
+            println("Average time ($tries runs): [$avg1, $avg2]")
             println()
         }
 }
@@ -68,11 +77,10 @@ fun getAllChallenges(packageName: String = ""): List<BaseChallenge<*>> {
         directory.walk()
             .filter { f -> f.isFile && !f.name.contains('$') && f.name.endsWith(".class") }
             .forEach {
-                val fullyQualifiedClassName = packageName +
-                        it.canonicalPath.removePrefix(directory.canonicalPath)
-                            .dropLast(6) // remove .class
-                            .replace('/', '.')
-                            .removePrefix(".") // handle root
+                val fullyQualifiedClassName = packageName + it.canonicalPath.removePrefix(directory.canonicalPath)
+                    .dropLast(6) // remove .class
+                    .replace('/', '.')
+                    .removePrefix(".") // handle root
                 try {
                     val clazz = Class.forName(fullyQualifiedClassName)
 

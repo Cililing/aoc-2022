@@ -1,5 +1,10 @@
 # AOC-2022
 
+## Running
+
+Just run: `./gradlew run`
+Run with benchmark enabled: `ENABLE_BENCHMARK=true ./gradlew run`
+
 ## Writing challenges
 
 The main function tries to find all classes annotated with `Challange`.
@@ -35,12 +40,38 @@ class Day0 : BaseChallange<InputType> {
 }
 ```
 
+For an input "dayX.txt" the app will try to find a file "dayX_test.txt" (**file must have extension**) to run the
+challenge against the test data.
+
+The class may be annotated with `@Benchmark(n: Int)` as well. Then the app will execute the Challenge n-times to get the
+average time. To run the benchmark you need to set a proper flag in the env (`enableBenchmark`).
+
 Example result:
 
 ```
+----------------------------------------
 Running challenge for day: 0
-Parsing data time: 6.444646ms
-Result 1: test passed, finished in 347.479us
-Result 2: test passed finished in 2.507us
-Day 0 finished in 1.010636ms.
+Parsing data time: 4.233289ms
+Result 1: test passed, finished in 632.095us
+Result 2: test passed finished in 19.299us
+Day 0 finished in 688.935us.
+Average time (1 runs): [632.095us, 19.299us]
+
+----------------------------------------
+Running challenge for day: 1
+Parsing data time: 46.801874ms
+Result 1: 69836, finished in 1.096371ms
+Result 2: 207968 finished in 17.919382ms
+Day 1 finished in 19.046762ms.
+Average time (1 runs): [1.096371ms, 17.919382ms]
+
+----------------------------------------
+Running challenge for day: 2
+Result 1/Test: 15 finished in 639.377us
+Result 2/Test: 12 finished in 10.447us
+Parsing data time: 4.455945ms
+Result 1: 11449, finished in 1.755163ms
+Result 2: 13187 finished in 1.735761ms
+Day 2 finished in 3.518039ms.
+Average time (1 runs): [1.755163ms, 1.735761ms]
 ```

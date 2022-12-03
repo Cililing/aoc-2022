@@ -7,14 +7,14 @@ private class Day1 : BaseChallenge<List<Int?>>() {
         return input.map { it.toIntOrNull() }
     }
 
-    override fun ex1(): String {
+    override fun ex1(input: List<Int?>): String {
         return input
             .runningFold(0) { acc, i -> if (i == null) 0 else acc + i }
             .maxBy { it }
             .toString()
     }
 
-    override fun ex2(): String {
+    override fun ex2(input: List<Int?>): String {
         return input
             .asSequence()
             .runningFold(0) { acc, i -> if (i == null) 0 else acc + i }

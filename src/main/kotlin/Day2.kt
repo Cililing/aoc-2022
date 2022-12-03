@@ -45,7 +45,7 @@ private class Day2 : BaseChallenge<List<EncodedInput>>() {
         }
     }
 
-    override fun ex1(): String {
+    override fun ex1(input: List<EncodedInput>): String {
         return input.map {
             val opponent = parseLetter(it.first)
             val you = parseLetter(it.second, 'X', 'Y', 'Z')
@@ -54,7 +54,7 @@ private class Day2 : BaseChallenge<List<EncodedInput>>() {
         }.sumOf { it.points() }.toString()
     }
 
-    override fun ex2(): String {
+    override fun ex2(input: List<EncodedInput>): String {
         return input.map {
             val opponent = parseLetter(it.first)
             val you = when (it.second) {
