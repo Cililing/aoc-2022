@@ -4,6 +4,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 @Challenge(3)
+@Benchmark(1000)
 private class Day3 : BaseChallenge<List<String>>() {
 
     override val inputPath = "input/day3.txt"
@@ -38,22 +39,14 @@ private class Day3 : BaseChallenge<List<String>>() {
             .toString()
     }
 
-    @OptIn(ExperimentalTime::class)
-    override fun prepare(): Duration {
-        return super.prepare().plus(measureTime {
-            'a'.internalCode()
-        })
-    }
-
     companion object {
-        private val internalCodes by lazy {
+        private val internalCodes = run {
             val lowercase = ('a'..'z').mapIndexed { index, c ->
                 c to index + 1
             }
             val uppercase = ('A'..'Z').mapIndexed { index, c ->
                 c to index + 26 + 1
             }
-
             (lowercase + uppercase).toMap()
         }
 

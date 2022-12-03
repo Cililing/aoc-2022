@@ -3,6 +3,7 @@
 ## Running
 
 Just run: `./gradlew run`
+
 Run with benchmark enabled: `ENABLE_BENCHMARK=true ./gradlew run`
 
 ## Writing challenges
