@@ -1,6 +1,6 @@
 package challenges.day4
 
-import extractor.IntExtractor
+import extractor.Extractor
 import ranges.fullyContains
 import ranges.overlap
 import runner.Benchmark
@@ -17,7 +17,7 @@ class Challenge {
     @Mapper
     fun parse(input: List<String>): Input {
         return input.map {
-            val extractor = IntExtractor(it)
+            val extractor = Extractor(it)
             (extractor.nextInt()..extractor.nextInt()) to
                 (extractor.nextInt()..extractor.nextInt())
         }
