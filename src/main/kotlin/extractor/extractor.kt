@@ -1,7 +1,5 @@
 package extractor
 
-class NoMoreResults : Exception("no more result present")
-
 /**
  * IntExtractor process the input to extract ints from it.
  * For example, with a string: `21papierz37` calling `nextInt` twice will return 21 and 37.

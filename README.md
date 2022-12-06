@@ -113,3 +113,15 @@ Task ex2 results:
     Run stats:      [Stats(max=2.636079ms, min=2.539103ms, avg=2.587591ms, percentile={0.9=2.539103ms, 0.95=2.539103ms, 0.99=2.539103ms}, stdDev=68.572us, median=2.587591ms)]
 
 ```
+
+## Code Quality
+
+1. `ktlint-format` and `ktlint-check` are present for keeping code formated
+2. Qodana for static code analysis, to run:
+
+```shell
+docker run --rm -it -p 8080:8080 \
+  -v `pwd`/:/data/project/ \  
+  -v `pwd`/.qodana/:/data/results/ \
+  jetbrains/qodana-jvm-community --show-report
+```
