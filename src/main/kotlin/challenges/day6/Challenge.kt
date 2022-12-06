@@ -4,37 +4,29 @@ import runner.Benchmark
 import runner.Challenge
 import runner.Mapper
 import runner.Task
-import java.lang.IllegalStateException
 
 @Challenge(6)
 @Benchmark(1000)
 class Challenge {
 
     @Mapper
-    fun parse(input: List<String>): String {
-        return input.first()
+    fun parse(input: List<String>): Sequence<Char> {
+        return input.first().asSequence()
     }
 
     @Task("ex1")
-    fun ex1(input: String): Int {
-        return findMarker(input, 4).position
+    fun ex1(input: Sequence<Char>): Int {
+        return findMarker(input, 4)
     }
 
     @Task("ex2")
-    fun ex2(input: String): Int {
-        return findMarker(input, 14).position
+    fun ex2(input: Sequence<Char>): Int {
+        return findMarker(input, 14)
     }
 
-    private fun findMarker(input: String, dataSize: Int): DataPackage {
-        val firstPackage = DataPackage(input.take(dataSize).toList(), dataSize, dataSize)
-        input.drop(dataSize).fold(firstPackage) { acc, c ->
-            if (acc.isMarker()) {
-                return acc
-            }
-
-            acc.next(c)
+    private fun findMarker(input: Sequence<Char>, dataSize: Int): Int {
+        return input.windowed(dataSize).indexOfFirst {
+            it.toSet().size == dataSize
         }
-
-        throw IllegalStateException("marker not found")
     }
 }
