@@ -1,38 +1,42 @@
 package challenges.day7
 
+import path.Path
+import runner.Benchmark
 import runner.Challenge
 import runner.Mapper
 import runner.Task
 
-data class Path(val path: String = "/") {
-    fun append(p: String) = if (path.endsWith('/')) Path("$path$p") else Path("$path/$p")
-    fun up(): Path {
-        val possible = path.dropLastWhile { it != '/' }
-        if (possible.endsWith('/') && possible.length > 1) {
-            return Path(possible.dropLast(1))
-        }
-        return Path(possible)
-    }
-
-    fun canUp() = path != "/"
-
-    fun allPaths(): List<Path> {
-        val all = mutableListOf<Path>()
-        var current = this
-        while (current.canUp()) {
-            all.add(current)
-            current = current.up()
-        }
-        all.add(Path()) // root
-        return all
-    }
-}
-
 @Challenge(7)
+@Benchmark(1000)
 class Challenge {
 
     @Mapper
-    fun parse(input: List<String>): Map<Path, Int> {
+    fun parse(input: List<String>): List<String> {
+        return input
+    }
+
+    @Task("ex1")
+    fun ex1(input: List<String>): Int {
+        return directoryTotalSum(getAllFiles(input))
+            .values
+            .filter { it < 100000 }
+            .sum()
+    }
+
+    @Task("ex2")
+    fun ex2(input: List<String>): Int {
+        val result = directoryTotalSum(getAllFiles(input))
+        val spaceTaken = result[Path("/")]!!
+        val freeSpace = 70_000_000 - spaceTaken
+        val requiredSpace = 30_000_000 - freeSpace
+
+        return result
+            .values
+            .filter { it >= requiredSpace }
+            .minOf { it }
+    }
+
+    private fun getAllFiles(input: List<String>): Map<Path, Int> {
         // map of all files on the disk
         // no directories included
         // fold over fullFilePath to its size
@@ -65,24 +69,6 @@ class Challenge {
 
             acc.first to acc.second
         }.second
-    }
-
-    @Task("ex1")
-    fun ex1(input: Map<Path, Int>): Int {
-        return directoryTotalSum(input).filterValues { it < 100000 }.values.sum()
-    }
-
-    @Task("ex2")
-    fun ex2(input: Map<Path, Int>): Int {
-        val result = directoryTotalSum(input)
-        val spaceTaken = result[Path("/")]!!
-        val freeSpace = 70_000_000 - spaceTaken
-        val requiredSpace = 30_000_000 - freeSpace
-
-        return result
-            .filter { it.value >= requiredSpace }
-            .values
-            .minOf { it }
     }
 
     private fun directoryTotalSum(input: Map<Path, Int>): Map<Path, Int> {
