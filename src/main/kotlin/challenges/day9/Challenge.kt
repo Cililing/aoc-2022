@@ -1,4 +1,4 @@
-package challenges.day8
+package challenges.day9
 
 import runner.Challenge
 import runner.Mapper
@@ -6,7 +6,7 @@ import runner.Task
 
 typealias Input = List<String>
 
-@Challenge(8)
+@Challenge(0)
 class Challenge {
 
     @Mapper
