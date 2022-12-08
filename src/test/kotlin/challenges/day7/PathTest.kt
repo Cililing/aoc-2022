@@ -1,5 +1,6 @@
 package challenges.day7
 
+import path.Path
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

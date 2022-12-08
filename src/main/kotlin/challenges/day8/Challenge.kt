@@ -1,9 +1,9 @@
 package challenges.day8
 
-import ndarray.allDown
-import ndarray.allLeft
-import ndarray.allRight
-import ndarray.allUp
+import ndarray.toDown
+import ndarray.toLeft
+import ndarray.toRight
+import ndarray.toUp
 import org.jetbrains.kotlinx.multik.api.toNDArray
 import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
 import org.jetbrains.kotlinx.multik.ndarray.data.get
@@ -37,11 +37,13 @@ class Challenge {
                 input[it.first][it.second] < v
             }
 
-            acc + ((dim[0] == 0 || dim[1] == 0 || dim[0] == maxIndex || dim[1] == maxIndex) ||
-                    dim.allUp().all(isShorter) ||
-                    dim.allDown(maxIndex).all(isShorter) ||
-                    dim.allLeft().all(isShorter) ||
-                    dim.allRight(maxIndex).all(isShorter))
+            acc + (
+                (dim[0] == 0 || dim[1] == 0 || dim[0] == maxIndex || dim[1] == maxIndex) ||
+                    dim.toUp().all(isShorter) ||
+                    dim.toDown(maxIndex).all(isShorter) ||
+                    dim.toLeft().all(isShorter) ||
+                    dim.toRight(maxIndex).all(isShorter)
+                )
                 .toInt()
         }
     }
@@ -58,10 +60,10 @@ class Challenge {
                 input[it.first][it.second] < v
             }
 
-            val viewUp = dim.allUp()
-            val viewDown = dim.allDown(maxIndex)
-            val viewLeft = dim.allLeft()
-            val viewRight = dim.allRight(maxIndex)
+            val viewUp = dim.toUp()
+            val viewDown = dim.toDown(maxIndex)
+            val viewLeft = dim.toLeft()
+            val viewRight = dim.toRight(maxIndex)
 
             val viewUpDistance = viewUp.takeWhile(viewCounter).count()
             val viewDownDistance = viewDown.takeWhile(viewCounter).count()
@@ -73,9 +75,9 @@ class Challenge {
             }
 
             incIfNeeded(viewUp.size, viewUpDistance) *
-                    incIfNeeded(viewDown.size, viewDownDistance) *
-                    incIfNeeded(viewLeft.size, viewLeftDistance) *
-                    incIfNeeded(viewRight.size, viewRightDistance)
+                incIfNeeded(viewDown.size, viewDownDistance) *
+                incIfNeeded(viewLeft.size, viewLeftDistance) *
+                incIfNeeded(viewRight.size, viewRightDistance)
         }.max()!!
     }
 }
