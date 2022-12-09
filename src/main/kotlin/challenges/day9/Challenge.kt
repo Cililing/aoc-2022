@@ -50,13 +50,11 @@ data class Position(val x: Int, val y: Int) {
 }
 
 data class LineState(
-    val start: Position = Position(0, 0),
     val head: Position = Position(0, 0),
     val tail: Position = Position(0, 0),
 )
 
 data class LongLineState(
-    val start: Position = Position(0, 0),
     val head: Position = Position(0, 0),
     val n1: Position = Position(0, 0),
     val n2: Position = Position(0, 0),
@@ -98,10 +96,7 @@ class Challenge {
 
             val newHead = state.head.move(move)
             val newTail = state.tail.moveTo(newHead)
-            state.copy(
-                head = newHead,
-                tail = newTail
-            ) to history + state
+            LineState(newHead, newTail) to history + state
         }
 
         val tailUnique = (allMoves.second.map { it.tail } + allMoves.first.tail).toSet()
@@ -126,7 +121,7 @@ class Challenge {
                 val newN8 = state.n8.moveTo(newN7)
                 val newTail = state.tail.moveTo(newN8)
 
-                val newState = state.copy(
+                LongLineState(
                     head = newHead,
                     n1 = newN1,
                     n2 = newN2,
@@ -137,9 +132,7 @@ class Challenge {
                     n7 = newN7,
                     n8 = newN8,
                     tail = newTail
-                )
-
-                newState to history + state
+                ) to history + state
             }
 
         val tailUnique = (allMoves.second.map { it.tail } + allMoves.first.tail).toSet()
