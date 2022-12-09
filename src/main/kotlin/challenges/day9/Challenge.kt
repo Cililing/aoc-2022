@@ -110,37 +110,37 @@ class Challenge {
 
     @Task("ex2")
     fun ex2(input: List<Pair<Direction, Int>>): Int {
-        val allMoves = input.normalize().fold(Pair(LongLineState(), listOf<LongLineState>())) { stateWithHistory, move ->
-            val state = stateWithHistory.first
-            val history = stateWithHistory.second
+        val allMoves =
+            input.normalize().fold(Pair(LongLineState(), listOf<LongLineState>())) { stateWithHistory, move ->
+                val state = stateWithHistory.first
+                val history = stateWithHistory.second
 
-            val newHead = state.head.move(move)
-            val newN1 = state.n1.moveTo(newHead)
-            val newN2 = state.n2.moveTo(newN1)
-            val newN3 = state.n3.moveTo(newN2)
-            val newN4 = state.n4.moveTo(newN3)
-            val newN5 = state.n5.moveTo(newN4)
-            val newN6 = state.n6.moveTo(newN5)
-            val newN7 = state.n7.moveTo(newN6)
-            val newN8 = state.n8.moveTo(newN7)
-            val newTail = state.tail.moveTo(newN8)
+                val newHead = state.head.move(move)
+                val newN1 = state.n1.moveTo(newHead)
+                val newN2 = state.n2.moveTo(newN1)
+                val newN3 = state.n3.moveTo(newN2)
+                val newN4 = state.n4.moveTo(newN3)
+                val newN5 = state.n5.moveTo(newN4)
+                val newN6 = state.n6.moveTo(newN5)
+                val newN7 = state.n7.moveTo(newN6)
+                val newN8 = state.n8.moveTo(newN7)
+                val newTail = state.tail.moveTo(newN8)
 
+                val newState = state.copy(
+                    head = newHead,
+                    n1 = newN1,
+                    n2 = newN2,
+                    n3 = newN3,
+                    n4 = newN4,
+                    n5 = newN5,
+                    n6 = newN6,
+                    n7 = newN7,
+                    n8 = newN8,
+                    tail = newTail
+                )
 
-            val newState = state.copy(
-                head = newHead,
-                n1 = newN1,
-                n2 = newN2,
-                n3 = newN3,
-                n4 = newN4,
-                n5 = newN5,
-                n6 = newN6,
-                n7 = newN7,
-                n8 = newN8,
-                tail = newTail
-            )
-
-            newState to history + state
-        }
+                newState to history + state
+            }
 
         val tailUnique = (allMoves.second.map { it.tail } + allMoves.first.tail).toSet()
         return tailUnique.size
