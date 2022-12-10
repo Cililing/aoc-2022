@@ -1,4 +1,4 @@
-package challenges.day2
+package challenges.day02
 
 data class Game(val opponent: Shape, val you: Shape) {
     fun points(): Int {

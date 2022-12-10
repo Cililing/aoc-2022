@@ -1,4 +1,4 @@
-package challenges.day0
+package challenges.day00
 
 import runner.Challenge
 import runner.Mapper

@@ -1,4 +1,4 @@
-package challenges.day5
+package challenges.day05
 
 import extractor.Extractor
 import runner.Benchmark

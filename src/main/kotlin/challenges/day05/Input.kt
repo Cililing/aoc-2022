@@ -1,4 +1,4 @@
-package challenges.day5
+package challenges.day05
 
 data class Input(
     val lines: Map<Int, Line>,

@@ -1,4 +1,4 @@
-package challenges.day6
+package challenges.day06
 
 import runner.Benchmark
 import runner.Challenge

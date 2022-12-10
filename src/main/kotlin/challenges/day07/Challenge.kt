@@ -1,4 +1,4 @@
-package challenges.day7
+package challenges.day07
 
 import path.Path
 import runner.Benchmark

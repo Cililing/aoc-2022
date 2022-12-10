@@ -1,4 +1,4 @@
-package challenges.day8
+package challenges.day08
 
 import ndarray.toDown
 import ndarray.toLeft

@@ -54,7 +54,7 @@ Example result:
 
 ```
 ------------------------------------------------
-Start run for challenges.day0.Day0
+Start run for challenges.day00.Day0
 Challenge data: @runner.Challenge(day=0)
 Test data parsed in [TEST DATA NOT PRESENT]
 Input data parsed in 10.526338ms
@@ -65,7 +65,7 @@ Task ex1 results:
     Run stats:      [Stats(max=385.48us, min=23.849us, avg=204.665us, percentile={0.9=23.849us, 0.95=23.849us, 0.99=23.849us}, stdDev=255.712us, median=204.665us)]
 
 ------------------------------------------------
-Start run for challenges.day1.Day1
+Start run for challenges.day01.Day1
 Challenge data: @runner.Challenge(day=1)
 Test data parsed in [TEST DATA NOT PRESENT]
 Input data parsed in 10.891253ms
@@ -81,7 +81,7 @@ Task ex2 results:
     Run stats:      [Stats(max=18.627754ms, min=2.629293ms, avg=10.628524ms, percentile={0.9=2.629293ms, 0.95=2.629293ms, 0.99=2.629293ms}, stdDev=11.312620ms, median=10.628524ms)]
 
 ------------------------------------------------
-Start run for challenges.day2.Day2
+Start run for challenges.day02.Day2
 Challenge data: @runner.Challenge(day=2)
 Test data parsed in 965.725us
 Input data parsed in 5.731966ms
@@ -97,7 +97,7 @@ Task ex2 results:
     Run stats:      [Stats(max=728.138us, min=526.543us, avg=627.341us, percentile={0.9=526.543us, 0.95=526.543us, 0.99=526.543us}, stdDev=142.549us, median=627.341us)]
 
 ------------------------------------------------
-Start run for challenges.day3.Day3
+Start run for challenges.day03.Day3
 Challenge data: @runner.Challenge(day=3)
 Test data parsed in 844.467us
 Input data parsed in 1.348757ms
