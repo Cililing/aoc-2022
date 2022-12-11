@@ -3,7 +3,6 @@ package runner
 import stats.allTheSame
 import stats.stats
 import java.io.File
-import kotlin.IllegalStateException
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
@@ -72,7 +71,7 @@ fun flow(className: String, enableBenchmark: Boolean = false) {
 //    val result = mapOf<Task, List<Result>>()
 
     runs.mapValues { task ->
-        (0..tries).map {
+        (0 until tries).map {
             val testResult = if (testData != null) measureTimedValue {
                 task.value.invoke(instance, testData.value)
             } else null

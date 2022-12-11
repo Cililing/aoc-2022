@@ -7,7 +7,7 @@ fun main(args: Array<String>) {
     val enableBenchmark = System.getenv("ENABLE_BENCHMARK")?.toBooleanStrictOrNull()
     getAllChallenges(Main)
         .sorted()
-        // .filter { it == "challenges.day10.Challenge" }
+        // .filter { it == "challenges.day11.Challenge" }
         .onEach { println("found class: $it") }
         .forEach { flow(it, enableBenchmark ?: false) }
 }
