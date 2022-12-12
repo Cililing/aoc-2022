@@ -79,6 +79,6 @@ class NDArrayTest {
         assertEquals(tc.expectedUpLeftValues, tc.startPos.toUpLeft().map(pairMapper))
         assertEquals(tc.expectedUpRightValues, tc.startPos.toUpRight(tc.inputD).map(pairMapper))
         assertEquals(tc.expectedDownLeftValues, tc.startPos.toDownLeft(tc.inputD).map(pairMapper))
-        assertEquals(tc.expectedDownRightValues, tc.startPos.toDownRight(tc.inputD).map(pairMapper))
+        assertEquals(tc.expectedDownRightValues, tc.startPos.toDownRight(tc.inputD, tc.inputD).map(pairMapper))
     }
 }

@@ -19,6 +19,7 @@ dependencies {
     implementation("org.nield:kotlin-statistics:1.2.1")
     implementation("org.jetbrains.kotlinx:multik-core:0.2.1")
     implementation("org.jetbrains.kotlinx:multik-default:0.2.1")
+    implementation("org.jgrapht:jgrapht-core:1.5.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.0")
 }
