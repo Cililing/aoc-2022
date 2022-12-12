@@ -7,38 +7,22 @@ import runner.Challenge
 import runner.Mapper
 import runner.Task
 
-data class Vertex(val x: Int, val y: Int, val c: Char) {
-    val id = "$x:$y"
-    override fun toString(): String {
-        return "$x:$y:$c"
-    }
-
-    fun possibleMoves(): Set<Pair<Int, Int>> {
-        return listOf(
-            Pair(x - 1, y),
-            Pair(x, y - 1),
-            Pair(x, y + 1),
-            Pair(x + 1, y),
-        ).filter { it.first >= 0 && it.second >= 0 }.toSet()
-    }
-}
-
 @Challenge(12)
 class Challenge {
 
     @Mapper
-    fun parse(input: List<String>): List<List<Vertex>> {
+    fun parse(input: List<String>): List<Vertex> {
         return input.mapIndexed { x, line ->
             line.mapIndexed { y, ch -> Vertex(x, y, ch) }
-        }
+        }.flatten()
     }
 
     @Task("ex1")
-    fun ex1(input: List<List<Vertex>>): Double {
+    fun ex1(input: List<Vertex>): Double {
         val graph = createGraph(input)
 
-        val start = input.flatten().find { it.c == 'S' } ?: throw IllegalStateException("start vertex not found")
-        val end = input.flatten().find { it.c == 'E' } ?: throw IllegalStateException("end vertex not found")
+        val start = input.find { it.c == 'S' } ?: throw IllegalStateException("start vertex not found")
+        val end = input.find { it.c == 'E' } ?: throw IllegalStateException("end vertex not found")
 
         val dijkstra = DijkstraShortestPath(graph)
         val path = dijkstra.getPath(start.id, end.id)
@@ -47,11 +31,11 @@ class Challenge {
     }
 
     @Task("ex2")
-    fun ex2(input: List<List<Vertex>>): Double {
+    fun ex2(input: List<Vertex>): Double {
         val graph = createGraph(input)
 
-        val starts = input.flatten().filter { it.c in setOf('S', 'a') }
-        val end = input.flatten().find { it.c == 'E' } ?: throw IllegalStateException("end vertex not found")
+        val starts = input.filter { it.c in setOf('S', 'a') }
+        val end = input.find { it.c == 'E' } ?: throw IllegalStateException("end vertex not found")
 
         val dijkstra = DijkstraShortestPath(graph)
         val weights = starts.map {
@@ -61,31 +45,17 @@ class Challenge {
         return weights.min()
     }
 
-    private fun createGraph(input: List<List<Vertex>>): SimpleDirectedGraph<String, DefaultEdge> {
+    private fun createGraph(input: List<Vertex>): SimpleDirectedGraph<String, DefaultEdge> {
         val graph = SimpleDirectedGraph<String, DefaultEdge>(DefaultEdge::class.java)
 
-        input.flatten().forEach { graph.addVertex(it.id) }
+        input.forEach { graph.addVertex(it.id) }
 
-        input.flatten().forEach { source ->
-            val adj = source.possibleMoves()
-            adj.forEach adj@{ targetPos ->
-                val target = input.getOrNull(targetPos.first)?.getOrNull(targetPos.second) ?: return@adj
+        input.forEach { source ->
+            source.possibleMoves().forEach { targetPos ->
+                val target = input.find { it.x == targetPos.first && it.y == targetPos.second }
+                    ?: return@forEach
 
-                if (source.c == 'S' && target.c == 'a') { // start, can go to a
-                    graph.addEdge(source.id, target.id)
-                    return@adj
-                }
-
-                if (source.c == 'z' && target.c == 'E') { // finish, can go here from z
-                    graph.addEdge(source.id, target.id)
-                    return@adj
-                }
-
-                if (target.c.code - source.c.code in setOf(0, 1)) { // climb (up to 1)
-                    graph.addEdge(source.id, target.id)
-                }
-
-                if (target.c.code <= source.c.code) { // go down, any height
+                if (source.canGo(target)) {
                     graph.addEdge(source.id, target.id)
                 }
             }

@@ -27,6 +27,9 @@ package ndarray
  *      toDownLeft -> 10
  *      toDownRight -> 12, 18, 24
  */
+
+// TODO: toDownRight is broken (must take two args)
+
 private fun IntArray.require2D() {
     require(this.size == 2) {
         "array must be 2d"
