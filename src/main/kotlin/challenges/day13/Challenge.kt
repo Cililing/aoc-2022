@@ -13,14 +13,12 @@ class Challenge {
 
     @Mapper
     fun parse(input: List<String>): List<SignalPair> {
-        val v = input.asSequence()
+        return input.asSequence()
             .filter { it.isNotBlank() }
             .map(::parseSignal)
             .chunked(2)
             .map { SignalPair(it.first(), it.last()) }
             .toList()
-
-        return v
     }
 
     @Task("ex1")
