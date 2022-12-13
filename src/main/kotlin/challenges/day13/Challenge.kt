@@ -6,23 +6,7 @@ import runner.Task
 import stack.peek
 import stack.pop
 import stack.push
-
-sealed class SignalType() {
-    object SignalOpen : SignalType()
-
-    data class SignalInt(val s: Int, val label: Boolean = false) : SignalType()
-    data class SignalList(val s: List<SignalType>) : SignalType()
-
-    fun anyLabeled(): Boolean {
-        return when (this) {
-            is SignalInt -> this.label
-            is SignalList -> this.s.any { it.anyLabeled() }
-            SignalOpen -> false
-        }
-    }
-}
-
-data class SignalPair(val signal1: SignalType, val signal2: SignalType)
+import types.toComparingInt
 
 @Challenge(13)
 class Challenge {
@@ -31,9 +15,7 @@ class Challenge {
     fun parse(input: List<String>): List<SignalPair> {
         val v = input.asSequence()
             .filter { it.isNotBlank() }
-            .map { signal ->
-                parseSignal(signal)
-            }
+            .map(::parseSignal)
             .chunked(2)
             .map { SignalPair(it.first(), it.last()) }
             .toList()
@@ -55,20 +37,19 @@ class Challenge {
         return input.flatMap { listOf(it.signal1, it.signal2) }
             .plus(
                 listOf(
-                    SignalType.SignalList(listOf(SignalType.SignalList(listOf(SignalType.SignalInt(2, true))))),
-                    SignalType.SignalList(listOf(SignalType.SignalList(listOf(SignalType.SignalInt(6, true)))))
+                    SignalType.SignalList(
+                        label = "2",
+                        s = listOf(SignalType.SignalList(listOf(SignalType.SignalInt(2))))
+                    ),
+                    SignalType.SignalList(
+                        label = "6",
+                        s = listOf(SignalType.SignalList(listOf(SignalType.SignalInt(6))))
+                    )
                 )
             )
-            .sortedWith { o1, o2 ->
-                when (ordered(o1, o2)) {
-                    null -> 0
-                    true -> 1
-                    false -> -1
-                }
-            }
-            .reversed()
+            .sortedWith { o1, o2 -> ordered(o1, o2).toComparingInt() * -1 } // desc
             .withIndex()
-            .filter { it.value.anyLabeled() }
+            .filter { it.value.isLabeled() }
             .map { it.index + 1 }
             .fold(1) { acc, i -> acc * i }
     }
