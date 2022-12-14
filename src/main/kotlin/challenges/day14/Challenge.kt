@@ -62,7 +62,7 @@ class Challenge {
         // start falling down to fill the stack with starting path
         val fallPoint =
             startingPoint.goDown(occupied) ?: throw IllegalStateException("the first fall point must exists")
-        val firstFallPath = (startingPoint.y..fallPoint.y).map { Point(startingPoint.x, it) }  // falls down by y
+        val firstFallPath = (startingPoint.y..fallPoint.y).map { Point(startingPoint.x, it) } // falls down by y
         firstFallPath.forEach {
             stack.push(it)
         }
