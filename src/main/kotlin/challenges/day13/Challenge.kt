@@ -3,6 +3,7 @@ package challenges.day13
 import runner.Challenge
 import runner.Mapper
 import runner.Task
+import stack.Stack
 import stack.peek
 import stack.pop
 import stack.push
@@ -49,7 +50,7 @@ class Challenge {
             .withIndex()
             .filter { it.value.isLabeled() }
             .map { it.index + 1 }
-            .fold(1) { acc, i -> acc * i }
+            .reduce(Int::times)
     }
 
     private fun ordered(first: SignalType, second: SignalType): Boolean? { // continue checking on null
@@ -88,7 +89,7 @@ class Challenge {
     }
 
     private fun parseSignal(signal: String): SignalType {
-        val stack = ArrayDeque<SignalType>()
+        val stack = Stack<SignalType>()
 
         var idx = 0 // skip first
         while (idx < signal.length) {
