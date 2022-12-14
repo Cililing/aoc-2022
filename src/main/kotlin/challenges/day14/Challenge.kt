@@ -3,31 +3,21 @@ package challenges.day14
 import runner.Challenge
 import runner.Mapper
 import runner.Task
-import kotlin.math.max
-import kotlin.math.min
-
-enum class Field {
-    Rock,
-    Sand
-}
-
-data class Point(val x: Int, val y: Int) {
-    fun to(other: Point): List<Point> {
-        return when {
-            // x the same
-            this.x == other.x -> (min(this.y, other.y)..max(this.y, other.y)).map { Point(this.x, it) }
-            this.y == other.y -> (min(this.x, other.x)..max(this.x, other.x)).map { Point(it, this.y) }
-            else -> throw IllegalArgumentException("can move only on straight line")
-        }
-    }
-}
+import stack.Stack
+import stack.pop
+import stack.push
 
 @Challenge(14)
 class Challenge {
 
+    companion object {
+        private val possiblePaths = setOf(Point(0, 1), Point(-1, 1), Point(1, 1))
+        private val startingPoint = Point(500, 0)
+    }
+
     @Mapper
-    fun parse(input: List<String>): Map<Point, Field> {
-        val rockPositions = input.fold(setOf<Point>()) { l, path ->
+    fun parse(input: List<String>): Set<Point> {
+        return input.fold(setOf<Point>()) { l, path ->
             val steps = path.split(" -> ").map { step ->
                 val positions = step.split(',').map { it.toInt() }
                 Point(positions.first(), positions.last())
@@ -40,62 +30,80 @@ class Challenge {
 
             l + rocks.second.toSet()
         }
-
-        return rockPositions.associateWith { Field.Rock }
     }
 
     @Task("ex1")
-    fun ex1(input: Map<Point, Field>): Any {
-        val mutableInput = input.toMutableMap()
+    fun ex1(input: Set<Point>): Int {
+        val mutableInput = input.toMutableSet()
         while (true) {
-            val startPoint = Point(500, 0)
-            val fallPoint = startPoint.goDown(mutableInput) ?: break
-            mutableInput[fallPoint] = Field.Sand
+            val fallPoint = startingPoint.goDown(mutableInput) ?: break
+            mutableInput.add(fallPoint)
         }
 
-        return mutableInput.count { it.value == Field.Sand }
+        return mutableInput.size - input.size
     }
 
     @Task("ex2")
-    fun ex2(input: Map<Point, Field>): Any {
-        val maxY = input.maxOf { it.key.y } + 2
-        // val xRange = (input.minOf { it.key.x } - 1..input.maxOf { it.key.x } + 1)
+    fun ex2(input: Set<Point>): Int {
+        val maxY = input.maxOf { it.y } + 2
+        val xRange = (500 - (maxY * 2)..500 + (maxY * 2)) // pyramid shape
+        val falseBottom = xRange.map { Point(it, maxY) }
 
-        val xRange = (0..5000)
-        val falseBottom = xRange.map { Point(it, maxY) }.associateWith { Field.Rock }
+        val withFalseBottom = input.toMutableSet().apply { addAll(falseBottom) }
+        val all = allPaths(withFalseBottom)
 
-        val mutableInput = input.toMutableMap()
-        mutableInput.putAll(falseBottom)
-
-        while (true) {
-            val startPoint = Point(500, 0)
-            if (mutableInput.containsKey(startPoint)) break // overflow detected
-            val fallPoint = startPoint.goDown(mutableInput) ?: break
-            mutableInput[fallPoint] = Field.Sand
-        }
-
-        return mutableInput.count { it.value == Field.Sand }
+        return all.size
     }
 
-    private tailrec fun Point.goDown(map: Map<Point, Field>): Point? {
-        if (this.y > map.maxOf { it.key.y }) {
+    private fun allPaths(startingOccupied: Set<Point>): Set<Point> {
+        val occupied = startingOccupied.toMutableSet()
+        val stack = Stack<Point>()
+        val visited = mutableSetOf<Point>()
+
+        // start falling down to fill the stack with starting path
+        val fallPoint =
+            startingPoint.goDown(occupied) ?: throw IllegalStateException("the first fall point must exists")
+        val firstFallPath = (startingPoint.y..fallPoint.y).map { Point(startingPoint.x, it) }  // falls down by y
+        firstFallPath.forEach {
+            stack.push(it)
+        }
+
+        while (stack.isNotEmpty()) {
+            val currentSand = stack.pop()
+
+            // process current
+            visited.add(currentSand)
+            occupied.add(currentSand)
+
+            // add possible paths to process
+            possiblePaths.map { currentSand + it }
+                .filter { !occupied.contains(it) }
+                .forEach { stack.push(it) }
+        }
+
+        return visited
+    }
+
+    // recursively go down (simulate one sand piece fall)
+    // not very efficient
+    private tailrec fun Point.goDown(occupied: Set<Point>): Point? {
+        if (this.y > occupied.maxOf { it.y }) {
             return null
         }
 
-        // try go down by one field (decrease y)
         val possibleDown = this.copy(y = this.y + 1)
-        if (!map.containsKey(possibleDown)) {
-            return possibleDown.goDown(map)
+        if (!occupied.contains(possibleDown)) {
+            return possibleDown.goDown(occupied)
         }
 
         val possibleDownLeft = possibleDown.copy(x = possibleDown.x - 1)
-        if (!map.containsKey(possibleDownLeft)) {
-            return possibleDownLeft.goDown(map)
+        if (!occupied.contains(possibleDownLeft)) {
+            return possibleDownLeft.goDown(occupied)
         }
 
         val possibleDownRight = possibleDown.copy(x = possibleDown.x + 1)
-        if (!map.containsKey(possibleDownRight)) {
-            return possibleDownRight.goDown(map)
+        if (!occupied.contains(possibleDownRight)) {
+            return possibleDownRight.goDown(occupied)
         }
 
         return this // cannot move
