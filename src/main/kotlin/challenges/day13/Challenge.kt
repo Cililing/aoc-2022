@@ -34,16 +34,18 @@ class Challenge {
     @Task("ex2")
     fun ex2(input: List<SignalPair>): Any {
         return input.flatMap { listOf(it.signal1, it.signal2) }
+            .asSequence()
             .plus(
                 listOf(
                     SignalType.SignalList(
                         label = "2",
-                        s = listOf(SignalType.SignalList(listOf(SignalType.SignalInt(2))))
+                        s = listOf(SignalType.SignalInt(2).asSignalList())
                     ),
                     SignalType.SignalList(
                         label = "6",
-                        s = listOf(SignalType.SignalList(listOf(SignalType.SignalInt(6))))
+                        s = listOf(SignalType.SignalInt(6).asSignalList())
                     )
+
                 )
             )
             .sortedWith { o1, o2 -> ordered(o1, o2).toComparingInt() * -1 } // desc
@@ -79,13 +81,17 @@ class Challenge {
             }
 
             first is SignalType.SignalInt && second is SignalType.SignalList ->
-                return ordered(SignalType.SignalList(listOf(first)), second)
+                return ordered(first.asSignalList(), second)
 
             first is SignalType.SignalList && second is SignalType.SignalInt ->
-                return ordered(first, SignalType.SignalList(listOf(second)))
+                return ordered(first, second.asSignalList())
 
             else -> throw IllegalStateException("should match one of previous cases")
         }
+    }
+
+    private fun SignalType.asSignalList(): SignalType.SignalList {
+        return SignalType.SignalList(listOf(this))
     }
 
     private fun parseSignal(signal: String): SignalType {
