@@ -6,7 +6,7 @@ import runner.Task
 
 typealias Input = List<String>
 
-@Challenge(0)
+@Challenge(15)
 class Challenge {
 
     @Mapper
