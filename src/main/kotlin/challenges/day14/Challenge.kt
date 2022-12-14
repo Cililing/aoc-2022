@@ -49,8 +49,7 @@ class Challenge {
         val xRange = (500 - (maxY * 2)..500 + (maxY * 2)) // pyramid shape
         val falseBottom = xRange.map { Point(it, maxY) }
 
-        val withFalseBottom = input.toMutableSet().apply { addAll(falseBottom) }
-        val all = allPaths(withFalseBottom)
+        val all = allPaths(input + falseBottom)
 
         return all.size
     }
