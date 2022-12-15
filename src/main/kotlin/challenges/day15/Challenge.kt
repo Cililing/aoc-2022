@@ -4,7 +4,6 @@ import extractor.extractor
 import runner.Challenge
 import runner.Mapper
 import runner.Task
-import types.toComparingInt
 import kotlin.math.abs
 
 data class Position(val x: Long, val y: Long) {
@@ -13,16 +12,21 @@ data class Position(val x: Long, val y: Long) {
     }
 }
 
-data class Sensor(val sensor: Position, val beacon: Position)
+data class LogEntry(val sensor: Position, val beacon: Position) {
+
+    val maxDistance by lazy {
+        sensor.distance(beacon)
+    }
+}
 
 @Challenge(15)
 class Challenge {
 
     @Mapper
-    fun parse(input: List<String>): List<Sensor> {
+    fun parse(input: List<String>): List<LogEntry> {
         return input.map {
             val positions = it.extractor().nextLongs()
-            Sensor(
+            LogEntry(
                 Position(positions[0], positions[1]),
                 Position(positions[2], positions[3])
             )
@@ -30,44 +34,35 @@ class Challenge {
     }
 
     @Task("ex1")
-    fun ex1(input: List<Sensor>): Any {
-        // https://en.wikipedia.org/wiki/Taxicab_geometry
-        val allOccupied = input.map { sensor ->
+    fun ex1(input: List<LogEntry>): Any {
+        val yRow = if (input.count() > 20) 2000000 else 10 // stupid idea how to determine if it's test input
 
-            // get sensor-line position
-            val maxDistance = abs(sensor.sensor.distance(sensor.beacon))
-            val moveLeft = sensor.sensor.x > sensor.beacon.x
-            val maxLeft = generateSequence(sensor.sensor) {
-                Position(it.x - moveLeft.toComparingInt(), it.y)
-            }.takeWhile { sensor.sensor.distance(it) <= maxDistance }
-                .last()
-            val xMaxDistance = abs(sensor.sensor.x) + abs(maxLeft.x)
+        val noBeacon = mutableSetOf<Long>()
+        input.forEach {
 
-            val all = ((sensor.sensor.y - xMaxDistance)..(sensor.sensor.y + maxDistance)).mapIndexed { index, l ->
-                if (index <= sensor.sensor.y) {
-                    // increase ...
-                    l to (sensor.sensor.x - l)..(sensor.sensor.x + l)
-                } else {
-                    l to (sensor.sensor.x - xMaxDistance + l) .. (sensor.sensor.x - maxDistance)
+            val sensorRange = it.maxDistance
+            val yDistance = abs(yRow - it.sensor.y)
+
+            if (yDistance <= sensorRange) {
+                // https://en.wikipedia.org/wiki/Taxicab_geometry
+                // d = abs(x1 - x2) + abs(y1 - y2)
+                // abs(x1 - x2) = abs(y1 - y2) - d
+
+                val xDist = sensorRange - yDistance
+                ((it.sensor.x - xDist)..(it.sensor.x + xDist)).forEach {
+                    noBeacon.add(it)
                 }
             }
-
-
-            // generate square
-//            val allToCheck = ((sensor.sensor.x - xDistance)..sensor.sensor.x + xDistance).map { x ->
-//                ((sensor.sensor.y - xDistance..sensor.sensor.y + xDistance)).map { y ->
-//                    Position(x, y)
-//                }
-//            }
-//
-//            allToCheck.flatten().filter { sensor.sensor.distance(it) <= maxDistance }
         }
 
-        return input.toString()
+        // some fields may be occupied by the beacon itself
+        val beaconsOnLine = input.map { it.beacon.y }.filter { it == yRow.toLong() }
+
+        return (noBeacon - beaconsOnLine.toSet()).size
     }
 
     @Task("ex2")
-    fun ex2(input: Sensor): Any {
-        return input.toString()
+    fun ex2(input: List<LogEntry>): Any? {
+        return null
     }
 }
